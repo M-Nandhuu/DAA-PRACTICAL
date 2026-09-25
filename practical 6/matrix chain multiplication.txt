@@ -1,0 +1,44 @@
+#include <iostream>
+#include <vector>
+#include <climits>
+
+using namespace std;
+
+int matrixChainOrder(const vector<int>& p) {
+    int n = p.size() - 1;
+    vector<vector<int>> m(n + 1, vector<int>(n + 1, 0));
+
+    for (int length = 2; length <= n; length++) {
+        for (int i = 1; i <= n - length + 1; i++) {
+            int j = i + length - 1;
+            m[i][j] = INT_MAX;
+
+            for (int k = i; k <= j - 1; k++) {
+                int q = m[i][k] + m[k + 1][j] + p[i - 1] * p[k] * p[j];
+                if (q < m[i][j]) {
+                    m[i][j] = q;
+                }
+            }
+        }
+    }
+    return m[1][n];
+}
+
+int main() {
+    int numMatrices;
+    cout << "Enter the number of matrices: ";
+    if (!(cin >> numMatrices) || numMatrices < 1) {
+        return 1;
+    }
+
+    vector<int> p(numMatrices + 1);
+    cout << "Enter the dimensions (" << numMatrices + 1 << " integers):\n";
+    for (int i = 0; i <= numMatrices; i++) {
+        cin >> p[i];
+    }
+
+    int minOps = matrixChainOrder(p);
+    cout << "Minimum number of multiplications: " << minOps << endl;
+
+    return 0;
+}
